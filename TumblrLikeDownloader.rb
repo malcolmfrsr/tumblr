@@ -6,7 +6,6 @@ folder = "my_like_backups"
 
 class TumblrLikeDownloader
 
-  # initialise
   def initialize(api_key, folder, user_name)
     # define the members
     @api_key = api_key
@@ -16,11 +15,10 @@ class TumblrLikeDownloader
     @url = "http://api.tumblr.com/v2/blog/#{user_name}.tumblr.com/info?api_key=#{api_key}"
 
     # create the folder
-    createFolder(@folder)
+    create_folder(@folder)
   end
 
-  # create folder
-  def createFolder(folder)
+  def create_folder(folder)
     if File.directory?(folder)
       return
     else
@@ -28,35 +26,36 @@ class TumblrLikeDownloader
     end
   end
 
-  # download
   def download
 
-    like_count = getLikedCount(@url)
+    like_count = get_liked_count(@url)
 
     download_all_liked_posts(like_count)
   end
 
-  def download_all_liked_posts(likes_left_to_download, likes_downloaded = 0)
-    # Tumblr api only allows for the loading of 20 liked posts at a time
+  def download_all_liked_posts(likes_left_to_download, offset = 0)
+    liked_posts = get_likes(@user_name, @api_key, offset)
+    count_posts = 0
 
-    liked_posts = get_likes(@user_name, @api_key, likes_downloaded)
-    count_downloads = 0
     if likes_left_to_download > liked_posts.length
       liked_posts.each do |post|
+
+        count_posts += 1
+        puts count_posts + offset
         puts post['summary']
+
         download_files(post['photos'])
-        count_downloads += 1
-        puts count_downloads + likes_downloaded
       end
-      # call recursive here
-      likes_downloaded += count_downloads
-      download_all_liked_posts(likes_left_to_download - count_downloads, likes_downloaded)
+      offset += count_posts
+      download_all_liked_posts(likes_left_to_download - count_posts, offset)
     else
       liked_posts.each do |post|
+
+        count_posts += 1
+        puts count_posts + offset
         puts post['summary']
+
         download_files(post['photos'])
-        count_downloads += 1
-        puts count_downloads + likes_downloaded
       end
       puts "We should be done"
     end
@@ -64,15 +63,13 @@ class TumblrLikeDownloader
 
   end
 
-  # get the liked count
-  def getLikedCount(url)
+  def get_liked_count(url)
     response = HTTParty.get(url)
     parsed_response = JSON.parse(response.body)
 
     return parsed_response['response']['blog']['likes']
   end
 
-  # get liked content
   def get_likes (user_name, api_key, offset = 0)
     url = "http://api.tumblr.com/v2/blog/#{user_name}.tumblr.com/likes?api_key=#{api_key}&limit=20&offset=#{offset}"
     response = HTTParty.get(url)
@@ -90,7 +87,6 @@ class TumblrLikeDownloader
     end
   end
 
-  # download files
   def download_file_to_folder(folder, url)
     file_name = File.basename(url)
     puts "Downloading . . . #{file_name}"
