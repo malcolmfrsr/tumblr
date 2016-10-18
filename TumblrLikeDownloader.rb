@@ -1,10 +1,10 @@
 require 'httparty'
 
-apiKey = "24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ"
-userName = "malcolmfrsr"
-folder = "my_like_backups"
+apiKey = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ'
+userName = 'malcolmfrsr'
+folder = 'my_like_backups'
 
-class TumblrLikeDownloader
+class Tumblr_like_downloader
 
   def initialize(api_key, folder, user_name)
     # define the members
@@ -44,7 +44,7 @@ class TumblrLikeDownloader
         puts count_posts + offset
         puts post['summary']
 
-        download_files(post['photos'])
+        download_files(post['summary'], post['photos'])
       end
       offset += count_posts
       download_all_liked_posts(likes_left_to_download - count_posts, offset)
@@ -55,11 +55,10 @@ class TumblrLikeDownloader
         puts count_posts + offset
         puts post['summary']
 
-        download_files(post['photos'])
+        download_files(post['summary'], post['photos'])
       end
-      puts "We should be done"
+      puts 'We should be done'
     end
-
 
   end
 
@@ -78,11 +77,15 @@ class TumblrLikeDownloader
     return parsed_response['response']['liked_posts']
   end
 
-  def download_files(photos)
+  def download_files(subfolder, photos)
+    clean_subfolder_path = subfolder.gsub(/[\x00\:\/\*\n\*\?\"<>\ \t|]/, '_')[0,40]
+
+    path = "#@folder/#{clean_subfolder_path}"
+    sub_folder = create_folder(path)
+    puts "To path #{path}"
     if photos.respond_to?(:each)
       photos.each do |image|
-        # Download the image
-        download_file_to_folder(@folder, image['original_size']['url'])
+        download_file_to_folder(path, image['original_size']['url'])
       end
     end
   end
@@ -90,6 +93,7 @@ class TumblrLikeDownloader
   def download_file_to_folder(folder, url)
     file_name = File.basename(url)
     puts "Downloading . . . #{file_name}"
+    puts "To path #{folder}"
 
     File.open("#{folder}/#{file_name}", "wb") do |f|
       f.binmode # @MariusButuc's suggestion
@@ -97,10 +101,8 @@ class TumblrLikeDownloader
       f.close
     end
   end
-
 end
 
-
-tumblr_likes = TumblrLikeDownloader.new(apiKey, folder, userName)
+tumblr_likes = Tumblr_like_downloader.new(apiKey, folder, userName)
 tumblr_likes.download
 
