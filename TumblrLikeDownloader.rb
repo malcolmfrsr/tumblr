@@ -3,7 +3,7 @@ require File.join File.dirname(__FILE__), 'TumblrApiHelper'
 
 apiKey = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ'
 userName = 'malcolmfrsr'
-folder = 'my_like_backups'
+folder = 'like_backup'
 
 class Tumblr_like_downloader
 
@@ -28,7 +28,7 @@ class Tumblr_like_downloader
 
   def download
 
-    like_count = get_liked_count(@url)
+    like_count = TumblrApiHelper.get_total_amount_of_posts(@url, 'likes')
     download_all_liked_posts(like_count)
   end
 
@@ -68,21 +68,6 @@ class Tumblr_like_downloader
     end
   end
 
-  def get_liked_count(url)
-    response = HTTParty.get(url)
-    parsed_response = JSON.parse(response.body)
-
-    return parsed_response['response']['blog']['likes']
-  end
-
-  def get_likes(user_name, api_key, offset = 0)
-    url = TumblrApiHelper.TUMBLR_LIKED_POSTS_LINK(user_name, api_key, offset)
-    response = HTTParty.get(url)
-    parsed_response = JSON.parse(response.body)
-
-    return parsed_response['response']['liked_posts']
-  end
-
   def download_images(subfolder, photos)
     clean_subfolder_path = subfolder.gsub(/[\x00\:\/\*\n\*\?\"<>\ \t|]/, '_')[0, 40]
 
@@ -90,7 +75,6 @@ class Tumblr_like_downloader
       @generic_name += 1
       clean_subfolder_path = @generic_name
     end
-
 
     path = "#@folder/#{clean_subfolder_path}"
     create_folder(path)
