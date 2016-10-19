@@ -33,7 +33,7 @@ class Tumblr_like_downloader
   end
 
   def download_all_liked_posts(likes_left_to_download, offset = 0)
-    liked_posts = get_likes(@user_name, @api_key, offset)
+    liked_posts = get_like_posts(@user_name, @api_key, offset)
     count_posts = 0
 
     if likes_left_to_download > liked_posts.length
@@ -109,6 +109,14 @@ class Tumblr_like_downloader
       f.write HTTParty.get(url).parsed_response
       f.close
     end
+  end
+
+  def get_like_posts(user_name, api_key, type = 'photos', offset)
+    url = TumblrApiHelper.TUMBLR_LIKED_POSTS_LINK(user_name, api_key, offset)
+    response = HTTParty.get(url)
+    parsed_response = JSON.parse(response.body)
+
+    return parsed_response['response']['liked_posts']
   end
 
 end
