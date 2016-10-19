@@ -15,15 +15,7 @@ class Tumblr_like_downloader
     @url = TumblrApiHelper.TUMBLR_INFO_LINK(user_name, api_key)
     @generic_name = 0
 
-    create_folder(@folder)
-  end
-
-  def create_folder(folder)
-    if File.directory?(folder)
-      return
-    else
-      Dir.mkdir(folder)
-    end
+    TumblrApiHelper.create_folder(@folder)
   end
 
   def download
@@ -77,7 +69,7 @@ class Tumblr_like_downloader
     end
 
     path = "#@folder/#{clean_subfolder_path}"
-    create_folder(path)
+    TumblrApiHelper.create_folder(path)
     puts "To path #{path}"
     if photos.respond_to?(:each)
       photos.each do |image|
@@ -93,7 +85,7 @@ class Tumblr_like_downloader
       clean_subfolder_path = subfolder.gsub(/[\x00\:\/\*\n\*\?\"<>\ \t|]/, '_')[0, 40]
 
       path = "#@folder/#{clean_subfolder_path}"
-      sub_folder = create_folder(path)
+      TumblrApiHelper.create_folder(path)
       puts "To path #{path}"
       download_file_to_folder(path, video_path)
     end

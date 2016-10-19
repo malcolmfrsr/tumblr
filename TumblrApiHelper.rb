@@ -31,7 +31,7 @@ module TumblrApiHelper
     end
   end
 
-  def TumblrApiHelper.create_folder()
+  def TumblrApiHelper.create_folder(folder)
     internal_create_folder(folder)
   end
 
