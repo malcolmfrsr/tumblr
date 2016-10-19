@@ -1,19 +1,15 @@
 require 'httparty'
 require File.join File.dirname(__FILE__), 'TumblrApiHelper'
 
-apiKey = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ'
-userName = 'malcolmfrsr'
-folder = 'like_backup'
-
 class Tumblr_like_downloader
 
-  def initialize(api_key, folder, user_name)
+  def initialize(api_key = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ', folder = 'likes', user_name = 'malcolmfrsr')
     # members
     @api_key = api_key
+    @generic_name = 0
     @folder = folder
     @user_name = user_name
     @url = TumblrApiHelper.TUMBLR_INFO_LINK(user_name, api_key)
-    @generic_name = 0
 
     TumblrApiHelper.create_folder(@folder)
   end
@@ -112,7 +108,4 @@ class Tumblr_like_downloader
   end
 
 end
-
-tumblr_likes = Tumblr_like_downloader.new(apiKey, folder, userName)
-tumblr_likes.download
 
