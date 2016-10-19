@@ -44,49 +44,6 @@ module TumblrApiHelper
         Dir.mkdir(folder)
       end
     end
-
-    def download_images(subfolder, photos)
-      clean_subfolder_path = subfolder.gsub(/[\x00\:\/\*\n\*\?\"<>\ \t|]/, '_')[0, 40]
-
-      if clean_subfolder_path.nil? || clean_subfolder_path.empty?
-        @generic_name += 1
-        clean_subfolder_path = @generic_name
-      end
-
-      path = "#@folder/#{clean_subfolder_path}"
-      internal_create_folder(path)
-      puts "To path #{path}"
-      if photos.respond_to?(:each)
-        photos.each do |image|
-          download_file_to_folder(path, image['original_size']['url'])
-        end
-      end
-    end
-
-    def download_videos(subfolder, video_path)
-      if video_path.nil?
-        puts 'No relevant content.'
-      else
-        clean_subfolder_path = subfolder.gsub(/[\x00\:\/\*\n\*\?\"<>\ \t|]/, '_')[0, 40]
-
-        path = "#@folder/#{clean_subfolder_path}"
-        internal_create_folder(path)
-        puts "To path #{path}"
-        download_file_to_folder(path, video_path)
-      end
-    end
-
-    def download_file_to_folder(folder, url)
-      file_name = File.basename(url)
-      puts "Downloading . . . #{file_name}"
-      puts "To path #{folder}"
-
-      File.open("#{folder}/#{file_name}", "wb") do |f|
-        f.binmode # @MariusButuc's suggestion
-        f.write HTTParty.get(url).parsed_response
-        f.close
-      end
-    end
   end
 
 end

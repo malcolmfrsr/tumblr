@@ -87,11 +87,11 @@ class Tumblr_like_downloader
       path = "#@folder/#{clean_subfolder_path}"
       TumblrApiHelper.create_folder(path)
       puts "To path #{path}"
-      download_file_to_folder(path, video_path)
+      download_file_to_folder(path, video_path, true)
     end
   end
 
-  def download_file_to_folder(folder, url)
+  def download_file_to_folder(folder, url, is_video = false)
     file_name = File.basename(url)
     puts "Downloading . . . #{file_name}"
     puts "To path #{folder}"

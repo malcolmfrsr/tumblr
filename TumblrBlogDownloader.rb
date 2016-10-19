@@ -2,9 +2,9 @@ require 'httparty'
 require File.join File.dirname(__FILE__), 'TumblrApiHelper'
 
 apiKey = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ'
-blogname = 'the-dodo'
+blogname = 'malcolmfrsr'
 folder = 'blog_backup'
-type = 'video'
+type = 'photo'
 
 class Tumblr_blog_downloader
 
