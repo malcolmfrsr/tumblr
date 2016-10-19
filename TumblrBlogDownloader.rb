@@ -86,10 +86,12 @@ class Tumblr_blog_downloader
     if clean_subfolder_path.nil? || clean_subfolder_path.empty?
       @generic_name += 1
       clean_subfolder_path = @generic_name
+      path = "#@folder/#{clean_subfolder_path}"
+    else
+      path = "#@folder/#{clean_subfolder_path.gsub(/[^\r]*\r/, '')}"
     end
 
-    path = "#@folder/#{clean_subfolder_path}"
-    create_folder(path)
+    TumblrApiHelper.create_folder(path)
     puts "To path #{path}"
     if photos.respond_to?(:each)
       photos.each do |image|

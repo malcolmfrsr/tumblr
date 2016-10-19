@@ -1,6 +1,7 @@
 require 'httparty'
 require File.join File.dirname(__FILE__), 'TumblrApiHelper'
 
+
 class Tumblr_like_downloader
 
   def initialize(api_key = '24cbpXp3Vbva3g86cWuzppF8gE6rqTHSxaAtMk4AkfOzFNXiuJ', folder = 'likes', user_name = 'malcolmfrsr')
@@ -62,9 +63,11 @@ class Tumblr_like_downloader
     if clean_subfolder_path.nil? || clean_subfolder_path.empty?
       @generic_name += 1
       clean_subfolder_path = @generic_name
+      path = "#@folder/#{clean_subfolder_path}"
+    else
+      path = "#@folder/#{clean_subfolder_path.gsub(/[^\r]*\r/, '')}"
     end
 
-    path = "#@folder/#{clean_subfolder_path}"
     TumblrApiHelper.create_folder(path)
     puts "To path #{path}"
     if photos.respond_to?(:each)
