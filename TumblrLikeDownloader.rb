@@ -111,4 +111,3 @@ class Tumblr_like_downloader
   end
 
 end
-
